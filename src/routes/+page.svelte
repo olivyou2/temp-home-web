@@ -62,7 +62,7 @@
                         <div class="column">
                             <div
                                 class="temp"
-                                style={`margin-top: ${(100 - temp.humidity) * 4}px;`}
+                                style={`margin-top: ${(65 - temp.humidity) * 3}px;`}
                             >
                                 {Math.floor(temp.humidity * 10) / 10}%
                             </div>
