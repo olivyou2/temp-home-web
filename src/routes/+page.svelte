@@ -1,11 +1,12 @@
 <script>
-    import { timeFormat } from "$lib/timetool";
+    import { longTimeFormat, timeFormat } from "$lib/timetool";
     import emblaCarouselSvelte from "embla-carousel-svelte";
 
     export let data;
     const { temps } = data;
-
-    console.log(temps);
+    const lastUpdate = temps[temps.length - 1]?.time || "";
+    const lastTemp = temps[temps.length - 1]?.temperature || "정보 없음";
+    const lastHum = temps[temps.length - 1]?.humidity || "정보 없음";
 </script>
 
 <main>
@@ -14,11 +15,11 @@
     </div>
 
     <div id="current">
-        <div class="item" id="temp">21.4℃</div>
-        <div class="item" id="hum">72.3%</div>
+        <div class="item" id="temp">{Math.floor(lastTemp * 10) / 10}℃</div>
+        <div class="item" id="hum">{Math.floor(lastHum * 10) / 10}%</div>
     </div>
 
-    <div id="last-update">최근 업데이트: 2025-10-25 18:14</div>
+    <div id="last-update">최근 업데이트: {longTimeFormat(lastUpdate)}</div>
 
     <div id="graph">
         <div
@@ -36,7 +37,7 @@
                                 class="temp"
                                 style={`margin-top: ${(40 - temp.temperature) * 4}px;`}
                             >
-                                {temp.temperature}℃
+                                {Math.floor(temp.temperature * 10) / 10}℃
                             </div>
                             <div class="dot"><span></span></div>
                             <div class="gap"></div>
@@ -63,7 +64,7 @@
                                 class="temp"
                                 style={`margin-top: ${(100 - temp.humidity) * 4}px;`}
                             >
-                                {temp.humidity}%
+                                {Math.floor(temp.humidity * 10) / 10}%
                             </div>
                             <div class="dot"><span></span></div>
                             <div class="gap"></div>
@@ -189,6 +190,7 @@
                 font-size: 14px;
                 font-weight: normal;
                 color: white;
+                text-align: center;
             }
         }
     }
@@ -255,6 +257,7 @@
                 font-size: 14px;
                 font-weight: normal;
                 color: white;
+                text-align: center;
             }
         }
     }
