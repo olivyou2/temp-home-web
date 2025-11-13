@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
     import { longTimeFormat, timeFormat } from "$lib/timetool";
     import emblaCarouselSvelte from "embla-carousel-svelte";
+    import type { EmblaCarouselType } from "embla-carousel";
 
     export let data;
     const { temps } = data;
     const lastUpdate = temps[temps.length - 1]?.time || "";
-    const lastTemp = temps[temps.length - 1]?.temperature || "정보 없음";
-    const lastHum = temps[temps.length - 1]?.humidity || "정보 없음";
+    const lastTemp = temps[temps.length - 1]?.temperature;
+    const lastHum = temps[temps.length - 1]?.humidity;
+    let period = 1;
 </script>
 
 <main>
@@ -21,6 +23,17 @@
 
     <div id="last-update">최근 업데이트: {longTimeFormat(lastUpdate)}</div>
 
+    <div id="time-period">
+        <!-- dropdown, 1M, 5M, 30M, 1H, 24H -->
+        <select id="time-select" bind:value={period}>
+            <option value="1">1분</option>
+            <option value="5">5분</option>
+            <option value="30">30분</option>
+            <option value="60">1시간</option>
+            <option value="1440">24시간</option>
+        </select>
+    </div>
+
     <div id="graph">
         <div
             class="embla"
@@ -30,7 +43,9 @@
             }}
         >
             <div class="embla__container">
-                {#each temps as temp}
+                {#each temps.reverse().filter((v, idx) => {
+                    if (idx % period === 0) return true;
+                }) as temp}
                     <div class="embla__slide">
                         <div class="column">
                             <div
@@ -57,7 +72,9 @@
             }}
         >
             <div class="embla__container">
-                {#each temps as temp}
+                {#each temps.reverse().filter((v, idx) => {
+                    if (idx % period === 0) return true;
+                }) as temp}
                     <div class="embla__slide">
                         <div class="column">
                             <div
@@ -126,6 +143,21 @@
 
         font-size: 14px;
         color: white;
+    }
+    #time-period {
+        padding-left: 10px;
+
+        font-size: 14px;
+        color: white;
+
+        > #time-select {
+            padding: 4px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            background: black;
+            border: 1px solid white;
+        }
     }
     #graph {
         height: 270px;
